@@ -13,7 +13,7 @@ probacceptlist = []
 randomlist = []
 magerrorlist = []
 
-for i in range(39):
+for i in range(78):
     templist.append(T)
     for a in range(avgpool):
         # for a ferromagnetic system the coupling constant is positive:
