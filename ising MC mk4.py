@@ -18,7 +18,7 @@ J=1
 spins = 2*np.random.randint(2, size=(L,L))-1
 #print(spins)
 
-for i in range(1000):
+for i in range(10):
         # calculate the energy of the system
     energy = 0
     for i in range(L):
@@ -52,7 +52,7 @@ for i in range(1000):
     #calculate the energy difference
     deltaE = new_energy - energy
     deltaElist.append(deltaE)
-    #print("deltaE ",deltaE)
+    print("deltaE ",deltaE)
 
     #accept or reject the move
     if deltaE < 0:
@@ -64,7 +64,8 @@ for i in range(1000):
         #calculate the acceptance probability
         p = np.exp(-deltaE/kb*T)
         probacceptlist.append(p)
-        r = np.random.rand()
+        r=0.7
+        #r = np.random.rand()
         randomlist.append(r)
         print("p ",p)
         print("r ",r)
@@ -80,6 +81,29 @@ print("mag ",magnetisation)
 print("final E ",energy)
 print(spins)
 
-#plot probability of acceptance
-plt.plot(probacceptlist)
+fig, axs = plt.subplots(2, 1, figsize=(10, 8))
+
+axs[0].plot(energylist)
+axs[0].set_xlabel('Iteration')
+axs[0].set_ylabel('Energy')
+axs[0].set_title('Energy vs. Iteration')
+
+axs[1].plot(deltaElist)
+axs[1].set_xlabel('Iteration')
+axs[1].set_ylabel('Delta E')
+axs[1].set_title('Delta E vs. Iteration')
+
+fig, ax = plt.subplots(figsize=(10, 4))
+ax.plot(randomlist, label='Random List')
+ax.plot(probacceptlist, label='Acceptance Probability')
+ax.set_xlabel('Iteration')
+ax.set_ylabel('Value')
+ax.set_title('Random List and Acceptance Probability vs. Iteration')
+ax.legend()
+
+#print net magnetisation density
+magnetisation = np.abs(np.sum(spins)) * (1 / (L * L))
+print("final M ",magnetisation)
+
+plt.tight_layout()
 plt.show()
