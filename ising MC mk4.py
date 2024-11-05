@@ -27,7 +27,7 @@ for i in range(1000):
             # this sums the neighbors with periodic boundary conditions by using the modulo operator % to wrap around the edges
             neighbours = spins[(i+1)%L, j] + spins[i,(j+1)%L] + spins[(i-1)%L, j] + spins[i,(j-1)%L]
             #instead of summing neighbor times spin ij, we sum all neighbors and multiply by the spin ij
-            energy += -nb*J*S
+            energy += -neighbours*J*S
 
     # Divide by 2 to correct for double-counting
     energy /= 2
@@ -45,7 +45,7 @@ for i in range(1000):
         for j in range(L):
             S = new_spins[i,j]
             neighbours = new_spins[(i+1)%L, j] + new_spins[i,(j+1)%L] + new_spins[(i-1)%L, j] + new_spins[i,(j-1)%L]
-            new_energy += -nb*J*S
+            new_energy += -neighbours*J*S
 
     # Divide by 2 to correct for double-counting
     new_energy /= 2
