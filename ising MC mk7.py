@@ -24,12 +24,13 @@ energylist = []
 Magnetisationlist = []
 probacceptlist = []
 randomlist = []
+r=0.5
 #np.random.seed(0)
 # for a ferromagnetic system the coupling constant is positive:
 J=1#.60218e-19
 
 #make a directory to save the gifs
-custom_dir_name = f'Gif_set_L={L}_iters={Iterations}_r=0.5_random set 1'
+custom_dir_name = f'Gif_set_L={L}_iters={Iterations}_r={r}_random set 1'
 path = Path(r'C:\Users\buzzd\OneDrive - University of Southampton\Documents\Mphys ising\Gif Sets') / custom_dir_name
 # Create the directory if it does not exist
 path.mkdir(parents=True, exist_ok=True)
@@ -142,7 +143,7 @@ def MCSIM(L, T, J, spins, iterations):
         else:
             #calculate the acceptance probability
             p = np.exp(-deltaE/(T))
-            r=0.5
+            r=r
             #r = np.random.rand()
             #print("p ",p)
             #print("r ",r)
