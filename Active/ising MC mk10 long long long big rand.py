@@ -7,17 +7,11 @@ from matplotlib.animation import PillowWriter
 # If running this program be prepared for it to save animation gifs to the save location
 # path = Path(...) at the top of the file
 
-# Current improvements:
-# - need to add avg magnetisation for each T to get error bars
-#   - need to only animate one of these for each T
-# - why doesnt low T give M=1 reliably? more iterations?
-# - why is T=5.8 acting like a crit temp?
-# - final plot not printing because of some animation error at the end of the program
-
-L=10
-T=0.1
+print("im running")
+L=20
+T=1 #from 1 - 4
 kb= 1#.380649e-23
-Iterations = 80000
+Iterations = 100000
 templist = []
 deltaElist = []
 energylist = []
@@ -26,16 +20,18 @@ Magnetisationavglist = []
 Magerrors = []
 probacceptlist = []
 randomlist = []
-avgpool=10
-r=0.25
+avgpool=25
+r = np.random.uniform(0, 1)
 #np.random.seed(0)
 # for a ferromagnetic system the coupling constant is positive:
 J=1#.60218e-19
 
 #make a directory to save the gifs
-custom_dir_name = f'MK9_Gif_set_L={L}_iters={Iterations}_r={r}_random avg set 1'
+custom_dir_name = f'MK10longrun_L={L}_iters={Iterations}_r=rand_random avg'
 path = Path(r'') / custom_dir_name
 path.mkdir(parents=True, exist_ok=True)
+
+print("ive made a dir")
 
 def initialise(L):
     """
@@ -58,7 +54,7 @@ def MCSIM(L, T, J, spins, Iterations, r, g):
     if DeltaE > 0, accept the move with probability p = exp(-DeltaE/T)
     if the move is accepted then set the old spin configuration to the flipped spin configuration.
     then move onto the next iteration and repeat.
-    This function also animates the spins at every 200th iteration.
+    This function also animates the spins at every 2000th iteration.
     This function returns the magnetisation of the final spin configuration for each temperature
     returns the magnetisation of the final spin configuration
     """
@@ -142,7 +138,7 @@ def MCSIM(L, T, J, spins, Iterations, r, g):
         else:
             #calculate the acceptance probability
             p = np.exp(-deltaE/(T))
-            #r = np.random.rand()
+            r = np.random.uniform(0, 1)
             #print("p ",p)
             #print("r ",r)
             if r < p:
@@ -151,11 +147,11 @@ def MCSIM(L, T, J, spins, Iterations, r, g):
                 #print("accepted by probability")
     # ANIMATION -----------
     # only plot if its the end of the avgpool
-        if a%200 == 0:
+        if a%2000 == 0:
             im = plt.imshow( spins , cmap = 'viridis', animated=True)
             images.append([im])
     animate = ani.ArtistAnimation(fig, images, interval=25, blit=True)
-    output_path = path / f'ising_model_L{L}_T{T:.1f}.gif'
+    output_path = path / f'ising_model_L{L}_T{T:.2f}.gif'
     if g == avgpool-1:
         animate.save(output_path, writer=PillowWriter())
         print("animation saved")
@@ -166,7 +162,7 @@ def MCSIM(L, T, J, spins, Iterations, r, g):
     print("magnetisation ",magnetisation," T ",T)
     return magnetisation
 
-for t in range(79):
+for t in range(61):
     templist.append(T)
     Magnetisationavglist = []
     for g in range(avgpool):
@@ -176,14 +172,17 @@ for t in range(79):
     Magnetisationlist.append(np.mean(Magnetisationavglist))
     print("Magnetisationlist ",Magnetisationlist)
     Magerrors.append(np.std(Magnetisationavglist))
-    T+=0.1
+    T+=0.05
 
 fig=plt.figure()
 plt.plot(templist,Magnetisationlist)
 plt.errorbar(templist, Magnetisationlist, yerr=Magerrors)
 plt.xlabel('Temperature')
 plt.ylabel('Magnetisation')
+plt.axvline(x=2.27, color='r', linestyle='--', label='$T_c$ (theoretical)')
+plt.legend()
 output_plot_path = path / 'Magnetisation_vs_Temperature.png'
 plt.title('Magnetisation vs Temperature')
 plt.savefig(output_plot_path)
 #plt.show()
+print("im done")
